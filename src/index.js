@@ -7,7 +7,7 @@ const ctx = canvas.getContext('2d');
 function drawBank(){
   ctx.fillStyle = "brown";
   ctx.fillRect(0, 440, 570, 45);
-  ctx.fillRect(0, 220, 570, 45);
+  ctx.fillRect(0, 210, 570, 45);
 }
 
 
@@ -37,10 +37,14 @@ var height = 30;
 
 const car = new Image();
 car.src = 'src/sprites/pink_car.png'
+const redCar = new Image();
+redCar.src = 'src/sprites/red_car_left.png'
 const truck = new Image();
 truck.src = 'src/sprites/truck1Right.png'
 let truckX1 = 0;
 let truckY1 = 395;
+let truckX3 = canvas.width
+let truckY3 = 258
 let truckHeight = 45;
 let truckWidth = 139;
 let carX1 = 100;
@@ -51,13 +55,18 @@ let carX2 = 350;
 let carY2 = 345;
 let truckX2 = -300;
 let truckY2 = 395;
+let redCarHeight = 45;
+let redCarWidth = 45;
+let redCarX1 = 0;
+let redCarY1 = 302;
 
 function drawTruckRight(){
-  var trucksX = [truckX1, truckX2];
-  var trucksY = [truckY1, truckY2];
+  var trucksX = [truckX1, truckX2, truckX3];
+  var trucksY = [truckY1, truckY2, truckY3];
+  var sX = [139, 139, 0]
 
   for (let i = 0; i < trucksX.length; i++){
-    ctx.drawImage(truck, 139, 0, 139, 45, trucksX[i], trucksY[i], truckWidth, truckHeight)
+    ctx.drawImage(truck, sX[i], 0, 139, 45, trucksX[i], trucksY[i], truckWidth, truckHeight)
   }
 
 
@@ -72,16 +81,21 @@ function drawTruckRight(){
   } else {
     truckX2 = -130
   }
+
+  if (truckX3 > -139) {
+    truckX3 = truckX3 - 2
+  } else {
+    truckX3 = canvas.width + 50
+  }
 }
 function drawCarLeft(){
-
-  var carsX = [carX1, carX2];
-  var carsY = [carY1, carY2];
+  var carColor = [car, car, redCar]
+  var carsX = [carX1, carX2, redCarX1];
+  var carsY = [carY1, carY2, redCarY1];
 
   for (let i = 0; i < carsX.length; i++){
-    ctx.drawImage(car, 0, 0, 45, 40, carsX[i], carsY[i], carHeight, carWidth)
+    ctx.drawImage(carColor[i], 0, 0, 45, 40, carsX[i], carsY[i], carHeight, carWidth)
   }
-
 
   if (carX1 > -45) {
     carX1 = carX1 - 4
@@ -89,19 +103,24 @@ function drawCarLeft(){
     carX1 = canvas.width + 50
   }
 
-
   if (carX2 > -45) {
     carX2 = carX2 - 4
   } else {
     carX2 = canvas.width + 50
   }
+
+  if (redCarX1 < canvas.width + 40) {
+    redCarX1 = redCarX1 + 3.5
+  } else {
+    redCarX1 = -40
+  }
 }
 
 function runOver(){
-  var carsX = [carX1, carX2];
-  var carsY = [carY1, carY2];
-  var trucksX = [truckX1, truckX2];
-  var trucksY = [truckY1, truckY2];
+  var carsX = [carX1, carX2, redCarX1];
+  var carsY = [carY1, carY2, redCarY1];
+  var trucksX = [truckX1, truckX2, truckX3];
+  var trucksY = [truckY1, truckY2, truckY3];
 
   for (let i = 0; i < carsX.length; i++) {
     if (carsX[i] <= x + width &&
@@ -167,13 +186,42 @@ function drawFrog(){
   ctx.drawImage(frogImg, sx, sy, swidth, sheight, x, y, width, height);
 }
 
+function moveLogs(){
+  if (logX1 < canvas.width + 100) {
+    logX1 += 2;
+  } else {
+    logX1 = -100;
+  }
+}
 
+let logX1 = 300;
+let logY1 = 180;
+let logWidth = 120;
+let logHeight = 30;
+
+function drawLogs(){
+  ctx.fillStyle = "tan";
+  ctx.fillRect(logX1, logY1, logWidth, logHeight);
+}
 
 function water(){
   ctx.fillStyle = "blue";
   ctx.fillRect(0, 0, 570, 220);
 }
-
+function float(){
+  if (y < 220) {
+    if (logX1 <= x + width &&
+        logX1 + logWidth >= x &&
+        logY1 + logHeight >= y &&
+        logY1 <= y + height){
+      if (x < canvas.width-30) {
+        x += 2;
+      }
+    }
+  } else {
+    y == 488
+  }
+}
 function moveFrog(){
   if (upPressed === true && up === true && y > 20) {
     y = y - 44;
@@ -226,11 +274,14 @@ function drawBackground(){
 function draw(){
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   drawBackground();
+  drawLogs();
+  moveLogs();
   drawFrog();
   drawCarLeft();
   drawTruckRight();
   moveFrog();
   runOver();
+  float();
   requestAnimationFrame(draw);
 }
 
