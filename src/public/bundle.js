@@ -212,37 +212,37 @@ var upPressed = false;
 var downPressed = false;
 
 function keyUpHandler(e) {
-  if (e.keyCode == 39) {
+  if (e.keyCode == 68) {
     rightPressed = false;
   }
 
-  if (e.keyCode == 37) {
+  if (e.keyCode == 65) {
     leftPressed = false;
   }
 
-  if (e.keyCode == 38) {
+  if (e.keyCode == 87) {
     upPressed = false;
   }
 
-  if (e.keyCode == 40) {
+  if (e.keyCode == 83) {
     downPressed = false;
   }
 }
 
 function keyDownHandler(e) {
-  if (e.keyCode == 39) {
+  if (e.keyCode == 68) {
     rightPressed = true;
   }
 
-  if (e.keyCode == 37) {
+  if (e.keyCode == 65) {
     leftPressed = true;
   }
 
-  if (e.keyCode == 38) {
+  if (e.keyCode == 87) {
     upPressed = true;
   }
 
-  if (e.keyCode == 40) {
+  if (e.keyCode == 83) {
     downPressed = true;
   }
 }
@@ -250,10 +250,67 @@ function keyDownHandler(e) {
 document.addEventListener('keydown', keyUpHandler, false);
 document.addEventListener('keyup', keyDownHandler, false);
 
+var padWidth = 30;
+var padHeight = 30;
+
+var pad1 = {x: 20, y: 4, onPad: false};
+var pad2 = {x: 120, y: 4, onPad: false};
+var pad3 = {x: 220, y: 4, onPad: false};
+var pad4 = {x: 320, y: 4, onPad: false};
+var pad5 = {x: 420, y: 4, onPad: false};
+var pad6 = {x: 520, y: 4, onPad: false};
+
+function onPad(){
+  let pads = [pad1, pad2, pad3, pad4, pad5, pad6];
+
+  for (let i = 0; i < pads.length; i++) {
+    let pad = pads[i];
+    if (pad.onPad === true) {
+      ctx.drawImage(frogImg, sx, sy, swidth, sheight, pad.x, pad.y, 30, 30);
+    }
+    if (pad.x <= x + width &&
+          pad.x + padWidth >= x &&
+          pad.y + padHeight >= y &&
+          pad.y <= y + height) {
+            pad.onPad = true;
+            y = 444;
+    } else if (y < 48) {
+      // y = 444;
+    }
+
+  }
+}
+function drawPads(){
+  ctx.fillStyle = "seagreen";
+  let pads = [pad1, pad2, pad3, pad4, pad5, pad6];
+  for (let i = 0; i < pads.length; i++) {
+    let pad = pads[i];
+    ctx.fillRect(pad.x, pad.y, padWidth, padHeight)
+  }
+}
 
 function drawFrog(){
   ctx.drawImage(frogImg, sx, sy, swidth, sheight, x, y, width, height);
 }
+
+let logX1 = 300;
+let logY1 = 178;
+let logX2 = 40;
+let logY2 = 178;
+let logX3 = 100;
+let logY3 = 136;
+let logX4 = 400;
+let logY4 = 136;
+let logX5 = 480;
+let logY5 = 92;
+let logX6 = 60;
+let logY6 = 92;
+let logX7 = 120;
+let logY7 = 48;
+let logX8 = 500;
+let logY8 = 48;
+let logWidth = 120;
+let logHeight = 30;
 
 function moveLogs(){
   if (logX1 < canvas.width + 100) {
@@ -261,16 +318,59 @@ function moveLogs(){
   } else {
     logX1 = -100;
   }
+
+  if (logX2 < canvas.width + 100) {
+    logX2 += 2;
+  } else {
+    logX2 = -100;
+  }
+
+  if (logX3 > 0 - logWidth) {
+    logX3 -= 2;
+  } else {
+    logX3 = canvas.width + 100;
+  }
+
+  if (logX4 > 0 - logWidth) {
+    logX4 -= 2;
+  } else {
+    logX4 = canvas.width + 100;
+  }
+
+  if (logX5 < canvas.width + 100) {
+    logX5 += 3;
+  } else {
+    logX5 = -100;
+  }
+
+  if (logX6 < canvas.width + 100) {
+    logX6 += 3;
+  } else {
+    logX6 = -100;
+  }
+
+  if (logX7 > 0 - logWidth) {
+    logX7 -= 2;
+  } else {
+    logX7 = canvas.width + 100;
+  }
+
+  if (logX8 > 0 - logWidth) {
+    logX8 -= 2;
+  } else {
+    logX8 = canvas.width + 100;
+  }
 }
 
-let logX1 = 300;
-let logY1 = 180;
-let logWidth = 120;
-let logHeight = 30;
 
 function drawLogs(){
   ctx.fillStyle = "tan";
-  ctx.fillRect(logX1, logY1, logWidth, logHeight);
+  var logsX = [logX1, logX2, logX3, logX4, logX5, logX6, logX7, logX8];
+  var logsY = [logY1, logY2, logY3, logY4, logY5, logY6, logY7, logY8];
+
+  for (let i = 0; i < logsX.length; i++) {
+    ctx.fillRect(logsX[i], logsY[i], logWidth, logHeight);
+  }
 }
 
 function water(){
@@ -278,19 +378,67 @@ function water(){
   ctx.fillRect(0, 0, 570, 220);
 }
 function float(){
-  if (y < 220) {
-    if (logX1 <= x + width &&
-        logX1 + logWidth >= x &&
+  if (logX1 <= x + width -30 &&
+        logX1 + logWidth >= x + 25 &&
         logY1 + logHeight >= y &&
-        logY1 <= y + height){
-      if (x < canvas.width-30) {
-        x += 2;
-      }
-    }
-  } else {
-    y == 488
+        logY1 <= y + height) {
+          if (x < canvas.width - 25){
+            x += 2;
+          }
+  } else if (logX2 <= x + width - 30 &&
+              logX2 + logWidth >= x + 25 &&
+              logY2 + logHeight >= y &&
+              logY2 <= y + height){
+          if (x < canvas.width - 25){
+            x += 2
+          }
+  } else if (logX3 <= x + width - 30 &&
+              logX3 + logWidth >= x - 30 &&
+              logY3 + logHeight >= y &&
+              logY3 <= y + height){
+          if (x > 0){
+            x -= 2
+          }
+  } else if (logX4 <= x + width - 30 &&
+              logX4 + logWidth >= x - 30 &&
+              logY4 + logHeight >= y &&
+              logY4 <= y + height){
+          if (x > 0){
+            x -= 2
+          }
+  } else if (logX5 <= x + width - 30 &&
+              logX5 + logWidth >= x + 25 &&
+              logY5 + logHeight >= y &&
+              logY5 <= y + height){
+          if (x < canvas.width - 25){
+            x += 3
+          }
+  } else if (logX6 <= x + width - 30 &&
+              logX6 + logWidth >= x + 25 &&
+              logY6 + logHeight >= y &&
+              logY6 <= y + height){
+          if (x < canvas.width - 25){
+            x += 3
+          }
+  } else if (logX7 <= x + width - 30 &&
+              logX7 + logWidth >= x - 30 &&
+              logY7 + logHeight >= y &&
+              logY7 <= y + height){
+          if (x > 0){
+            x -= 2
+          }
+  } else if (logX8 <= x + width - 30 &&
+              logX8 + logWidth >= x - 30 &&
+              logY8 + logHeight >= y &&
+              logY8 <= y + height){
+          if (x > 0){
+            x -= 2
+          }
+  } else if (y < 220) {
+    y = 488;
   }
 }
+
 function moveFrog(){
   if (upPressed === true && up === true && y > 20) {
     y = y - 44;
@@ -346,11 +494,13 @@ function draw(){
   drawLogs();
   moveLogs();
   drawFrog();
+  float();
+  drawPads();
+  onPad();
   drawCarLeft();
   drawTruckRight();
   moveFrog();
   runOver();
-  float();
   requestAnimationFrame(draw);
 }
 
