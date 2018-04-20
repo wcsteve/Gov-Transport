@@ -60,7 +60,6 @@ let redCarWidth = 45;
 let redCarX1 = 0;
 let redCarY1 = 302;
 
-{xStart, yStart, sprite:}
 
 function drawTruckRight(){
   var trucksX = [truckX1, truckX2, truckX3];
